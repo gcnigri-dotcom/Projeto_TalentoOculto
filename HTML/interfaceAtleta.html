@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Talento Oculto — Protótipo</title>
+<style>
+  :root{
+    --bg:#f6f8fb;
+    --card:#ffffff;
+    --accent:#0b66ff; /* azul */
+    --accent-2:#ff7a18; /* laranja */
+    --muted:#6b7280;
+    --glass: rgba(255,255,255,0.6);
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+  body{ margin:0; background:var(--bg); color:#111; }
+  header{
+    background: linear-gradient(90deg, rgba(11,102,255,0.06), rgba(255,122,24,0.03));
+    padding:18px 20px; display:flex; align-items:center; gap:16px;
+    border-bottom:1px solid rgba(0,0,0,0.06);
+  }
+  .brand{ display:flex; align-items:center; gap:12px; }
+  .logo{
+    width:44px; height:44px; border-radius:8px; background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    display:grid; place-items:center; color:white; font-weight:700; font-size:18px;
+  }
+  .title{ font-size:18px; font-weight:600; }
+  .tabs{ margin-left:auto; display:flex; gap:8px; }
+  .tab{ padding:8px 14px; border-radius:8px; background:transparent; cursor:pointer; color:var(--muted); border:1px solid transparent; }
+  .tab.active{ background:var(--card); color:var(--accent); box-shadow:0 6px 18px rgba(11,102,255,0.06); border-color:rgba(11,102,255,0.08); }
+  main{ padding:20px; max-width:1200px; margin:18px auto; }
+  .grid{ display:grid; grid-template-columns: 1fr 380px; gap:18px; }
+  /* Athlete form */
+  .panel{ background:var(--card); padding:16px; border-radius:12px; box-shadow:0 6px 18px rgba(3,10,25,0.03); }
+  label{ display:block; font-size:13px; margin-top:10px; color:#333; }
+  input[type="text"], input[type="number"], select, textarea{
+    width:100%; padding:10px 12px; margin-top:6px; border-radius:8px; border:1px solid #e6e9ef; background:transparent;
+  }
+  .row{ display:flex; gap:10px; }
+  .half{ flex:1; }
+  .uploader{ border:2px dashed #e0e6f0; padding:14px; border-radius:10px; text-align:center; margin-top:10px; background:linear-gradient(180deg,#fff, #fbfdff); }
+  .thumbs{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .thumb{ width:120px; height:70px; border-radius:8px; background:#000; color:white; display:flex; align-items:center; justify-content:center; font-size:12px; position:relative; overflow:hidden; }
+  .thumb video{ width:100%; height:100%; object-fit:cover; display:block; }
+  .btn{ padding:10px 12px; background:var(--accent); color:white; border-radius:8px; border:0; cursor:pointer; }
+  .btn.secondary{ background:transparent; color:var(--accent); border:1px solid rgba(11,102,255,0.12); }
+  .metric{ display:flex; gap:8px; align-items:center; margin-top:6px; }
+  .metric input[type=range]{ width:100%; }
+  /* Scout area */
+  .filters{ display:flex; flex-direction:column; gap:8px; }
+  .filter-row{ display:flex; gap:8px; }
+  .card{
+    background:var(--card); padding:12px; border-radius:10px; display:flex; gap:12px; align-items:flex-start; border:1px solid rgba(2,6,23,0.04);
+  }
+  .card .video-thumb{ width:180px; height:110px; border-radius:8px; overflow:hidden; background:#000; display:flex; align-items:center; justify-content:center; cursor:pointer;}
+  .card .info{ flex:1; }
+  .pill{ display:inline-block; padding:6px 8px; border-radius:999px; background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:white; font-size:12px; margin-right:6px; }
+  .attr{ display:flex; gap:8px; margin-top:8px; color:var(--muted); font-size:13px; flex-wrap:wrap; }
+  .actions{ display:flex; gap:8px; margin-top:10px; }
+  .shortlist{ background:#fff8e9; color:#8a5a00; padding:8px 10px; border-radius:8px; border:1px solid rgba(138,90,0,0.08); cursor:pointer;}
+  .modal{ position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.45); z-index:60; }
+  .modal .box{ background:white; width:90%; max-width:900px; border-radius:10px; padding:12px; }
+  .modal.show{ display:flex; }
+  footer{ max-width:1200px; margin:0 auto; padding:28px 20px; color:var(--muted); font-size:13px; text-align:center; }
+  /* responsive */
+  @media (max-width:900px){
+    .grid{ grid-template-columns: 1fr; }
+    .card .video-thumb{ display:none; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="logo">TO</div>
+    <div>
+      <div class="title">Talento Oculto</div>
+      <div style="font-size:12px;color:var(--muted)">Revelando habilidades — conectando atletas e olheiros</div>
+    </div>
+  </div>
+
+  <div class="tabs" role="tablist" aria-label="Mudar papel">
+    <button class="tab active" id="tab-atleta" onclick="switchTab('atleta')">Sou Atleta</button>
+    <button class="tab" id="tab-olheiro" onclick="switchTab('olheiro')">Sou Olheiro</button>
+  </div>
+</header>
+
+<main>
+  <!-- ATLETA VIEW -->
+  <section id="view-atleta">
+    <div class="grid">
+      <div class="panel">
+        <h3>Meu Perfil</h3>
+        <label for="nome">Nome completo</label>
+        <input id="nome" type="text" placeholder="Ex: João Silva" value="João Silva">
+
+        <div class="row">
+          <div class="half">
+            <label for="idade">Idade</label>
+            <input id="idade" type="number" value="18" min="10" max="60">
+          </div>
+          <div class="half">
+            <label for="cidade">Cidade</label>
+            <input id="cidade" type="text" value="São Paulo">
+          </div>
+        </div>
+
+        <label for="esporte">Esporte</label>
+        <select id="esporte">
+          <option>Futebol</option>
+          <option>Basquete</option>
+          <option>Voleibol</option>
+          <option>Atletismo</option>
+        </select>
+
+        <label>Principais atributos (0–100)</label>
+        <div class="metric"><div style="width:90px">Velocidade</div><input id="vel" type="range" min="0" max="100" value="85"><div id="vval" style="width:36px;text-align:right">85</div></div>
+        <div class="metric"><div style="width:90px">Técnica</div><input id="tec" type="range" min="0" max="100" value="78"><div id="tval" style="width:36px;text-align:right">78</div></div>
+        <div class="metric"><div style="width:90px">Resistência</div><input id="res" type="range" min="0" max="100" value="72"><div id="rval" style="width:36px;text-align:right">72</div></div>
+
+        <label>Privacidade do vídeo</label>
+        <select id="visibilidade">
+          <option value="publico">Público — visível a todos</option>
+          <option value="olheiros">Apenas olheiros verificados</option>
+          <option value="privado">Privado — apenas eu</option>
+        </select>
+
+        <hr style="margin:14px 0;border:none;border-top:1px solid #eef2f6">
+
+        <h4>Enviar vídeo de destaque</h4>
+        <div class="uploader" id="uploader">
+          <div style="font-size:14px;color:var(--muted)">Arraste ou clique para selecionar arquivo de vídeo (mp4). Para teste, selecione qualquer arquivo de vídeo.</div>
+          <input id="file" type="file" accept="video/*" style="margin-top:8px;">
+        </div>
+
+        <div class="thumbs" id="thumbs"></div>
+
+        <label for="bio">Descrição / Observações</label>
+        <textarea id="bio" rows="3" placeholder="Ex: Ponta direita, canhoto, bom cruzamento."></textarea>
+
+        <div style="margin-top:12px; display:flex; gap:8px; justify-content:flex-end;">
+          <button class="btn secondary" onclick="resetAtleta()">Limpar</button>
+          <button class="btn" onclick="salvarPerfil()">Salvar perfil</button>
+        </div>
+      </div>
+
+      <aside class="panel">
+        <h4>Perfil público</h4>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <div style="width:56px;height:56px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent-2)); color:white; display:grid; place-items:center; font-weight:700;">JS</div>
+          <div>
+            <div style="font-weight:700">João Silva — 18 anos</div>
+            <div style="color:var(--muted);font-size:13px">São Paulo • Futebol • Ponta</div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px">
+          <strong>Atributos</strong>
+          <div class="attr">
+            <span class="pill">Velocidade 85</span>
+            <span class="pill">Técnica 78</span>
+            <span class="pill">Resistência 72</span>
+          </div>
+        </div>
+
+        <div style="margin-top:12px">
+          <strong>Vídeos</strong>
+          <div id="lista-videos" style="margin-top:8px">
+            <div style="font-size:13px;color:var(--muted)">Nenhum vídeo enviado</div>
+          </div>
+        </div>
+
+        <div style="margin-top:18px;">
+          <strong>Confiança do contato</strong>
+          <div style="font-size:13px;color:var(--muted); margin-top:6px">Verifique documentos e permita olheiros verificados. Recomendamos não compartilhar contatos pessoais antes de validar propostas.</div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- OLHEIRO VIEW -->
+  <section id="view-olheiro" style="display:none;">
+    <div class="grid">
+      <div>
+        <div class="panel">
+          <h3>Buscar atletas</h3>
+          <div class="filters">
+            <div class="filter-row">
+              <select id="f-esporte" style="flex:1;">
+                <option value="">Qualquer esporte</option>
+                <option>Futebol</option>
+                <option>Basquete</option>
+                <option>Voleibol</option>
+              </select>
+              <select id="f-pos" style="width:160px">
+                <option value="">Qualquer posição</option>
+                <option>Ponta</option>
+                <option>Atacante</option>
+                <option>Meio</option>
+              </select>
+            </div>
+
+            <div class="filter-row">
+              <input id="f-cidade" type="text" placeholder="Cidade" style="flex:1;">
+              <input id="f-idade" type="text" placeholder="Idade (ex: 16-21)" style="width:160px">
+            </div>
+
+            <div style="display:flex; gap:8px; align-items:center;">
+              <div style="width:140px">Velocidade mínima</div>
+              <input id="f-vel" type="range" min="0" max="100" value="70" style="flex:1;">
+              <div id="f-vel-val" style="width:36px;text-align:right">70</div>
+            </div>
+
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <button class="btn" onclick="buscar()">Buscar</button>
+              <button class="btn secondary" onclick="resetFiltros()">Limpar filtros</button>
+              <div style="margin-left:auto;color:var(--muted);align-self:center;font-size:13px">Resultados: <span id="total">0</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="resultados" style="margin-top:14px; display:grid; gap:12px;">
+          <!-- Cards dinamicamente aqui -->
+        </div>
+      </div>
+
+      <aside class="panel">
+        <h4>Shortlist</h4>
+        <div id="shortlist" style="display:flex; flex-direction:column; gap:8px; margin-top:10px;">
+          <div style="font-size:13px;color:var(--muted)">Nenhum atleta selecionado</div>
+        </div>
+
+        <div style="margin-top:12px">
+          <h4>Buscar salva</h4>
+          <div style="font-size:13px;color:var(--muted); margin-top:6px">Salve filtros úteis e receba alertas quando novos atletas surgirem.</div>
+          <button class="btn" style="margin-top:10px">Salvar busca</button>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+</main>
+
+<!-- Video modal -->
+<div id="modal" class="modal" role="dialog" aria-modal="true">
+  <div class="box">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <strong id="m-title">Vídeo do atleta</strong>
+      <div><button class="btn secondary" onclick="closeModal()">Fechar</button></div>
+    </div>
+    <div style="margin-top:10px;">
+      <video id="m-video" controls style="width:100%;border-radius:8px; background:#000"></video>
+    </div>
+    <div style="display:flex; gap:8px; margin-top:10px;">
+      <button class="btn" id="contact-btn">Contactar atleta</button>
+      <button class="shortlist" onclick="modalShortlist()">Adicionar à shortlist</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  Protótipo — Talento Oculto • Exemplo de interface para Atleta e Olheiro. Desenvolva backend para armazenamento de vídeos, verificação de contas e notificações.
+</footer>
+
+<script>
+  // Tab switch
+  function switchTab(t){
+    document.getElementById('view-atleta').style.display = t==='atleta' ? '' : 'none';
+    document.getElementById('view-olheiro').style.display = t==='olheiro' ? '' : 'none';
+    document.getElementById('tab-atleta').classList.toggle('active', t==='atleta');
+    document.getElementById('tab-olheiro').classList.toggle('active', t==='olheiro');
+  }
+
+  // Athlete uploader preview
+  const fileInput = document.getElementById('file');
+  const thumbs = document.getElementById('thumbs');
+  const listaVideos = document.getElementById('lista-videos');
+  let videos = []; // {file, url, title}
+
+  fileInput.addEventListener('change', e=>{
+    const f = e.target.files[0];
+    if(!f) return;
+    const url = URL.createObjectURL(f);
+    const id = Math.random().toString(36).slice(2,9);
+    videos.push({id, file:f, url, title: f.name});
+    renderThumbs();
+    renderPerfilVideos();
+  });
+
+  function renderThumbs(){
+    thumbs.innerHTML = '';
+    videos.forEach(v=>{
+      const d = document.createElement('div'); d.className='thumb';
+      const vid = document.createElement('video'); vid.src = v.url; vid.muted = true; vid.loop=true; vid.play().catch(()=>{});
+      d.appendChild(vid);
+      const del = document.createElement('button');
+      del.textContent='×'; del.style.position='absolute'; del.style.right='6px'; del.style.top='6px'; del.style.background='rgba(0,0,0,0.45)';
+      del.style.color='white'; del.style.border='0'; del.style.borderRadius='6px'; del.style.width='24px'; del.style.height='24px';
+      del.onclick = ()=>{ videos = videos.filter(x=>x.id!==v.id); renderThumbs(); renderPerfilVideos(); };
+      d.appendChild(del);
+      d.onclick = ()=> openModalWith({title:'Vídeo do atleta — '+(v.title||'destaque'), url:v.url});
+      thumbs.appendChild(d);
+    });
+  }
+
+  function renderPerfilVideos(){
+    if(videos.length===0){
+      lista-videos.innerHTML = '';
+    }
+    listaVideos.innerHTML = '';
+    if(videos.length===0){
+      listaVideos.innerHTML = '<div style="font-size:13px;color:var(--muted)">Nenhum vídeo enviado</div>';
+      return;
+    }
+    videos.forEach(v=>{
+      const el = document.createElement('div'); el.style.display='flex'; el.style.gap='8px'; el.style.alignItems='center'; el.style.marginTop='8px';
+      const t = document.createElement('div'); t.style.width='52px'; t.style.height='36px'; t.style.background='#000'; t.style.borderRadius='6px';
+      const vv = document.createElement('video'); vv.src = v.url; vv.muted=true; vv.play().catch(()=>{}); vv.style.width='100%'; vv.style.height='100%'; vv.style.objectFit='cover';
+      t.appendChild(vv);
+      const info = document.createElement('div'); info.innerHTML = '<div style="font-weight:600">'+v.title+'</div><div style="font-size:12px;color:var(--muted)">Clique para abrir</div>';
+      el.appendChild(t); el.appendChild(info);
+      el.onclick = ()=> openModalWith({title:v.title,url:v.url});
+      listaVideos.appendChild(el);
+    });
+  }
+
+  // Update range labels
+  const vval=document.getElementById('vval'), tval=document.getElementById('tval'), rval=document.getElementById('rval');
+  document.getElementById('vel').addEventListener('input', e=> vval.textContent = e.target.value);
+  document.getElementById('tec').addEventListener('input', e=> tval.textContent = e.target.value);
+  document.getElementById('res').addEventListener('input', e=> rval.textContent = e.target.value);
+
+  // Save (simulado)
+  function salvarPerfil(){
+    const perfil = {
+      nome: document.getElementById('nome').value,
+      idade: document.getElementById('idade').value,
+      cidade: document.getElementById('cidade').value,
+      esporte: document.getElementById('esporte').value,
+      vel: document.getElementById('vel').value,
+      tec: document.getElementById('tec').value,
+      res: document.getElementById('res').value,
+      visibilidade: document.getElementById('visibilidade').value,
+      bio: document.getElementById('bio').value,
+      videos: videos.map(v => ({title:v.title, url:v.url}))
+    };
+    // aqui você enviaria ao backend via fetch/AJAX
+    alert('Perfil salvo (simulado). Envie para o backend para persistir.');
+  }
+  function resetAtleta(){ if(confirm('Limpar todos os campos?')){ document.getElementById('nome').value=''; document.getElementById('idade').value=''; document.getElementById('cidade').value=''; videos=[]; renderThumbs(); renderPerfilVideos(); } }
+
+  // OLHEIRO: dados de exemplo (simulados)
+  const sample = [
+    {id:1,nome:'João Silva',idade:18,cidade:'São Paulo',esporte:'Futebol',pos:'Ponta',vel:85,tec:78,res:72, thumbUrl:'', videoUrl:'', destaque:'Cruzamento e velocidade'},
+    {id:2,nome:'Lucas Pereira',idade:19,cidade:'Rio de Janeiro',esporte:'Futebol',pos:'Atacante',vel:88,tec:81,res:70},
+    {id:3,nome:'Pedro Alves',idade:17,cidade:'Belo Horizonte',esporte:'Futebol',pos:'Meio',vel:68,tec:76,res:80},
+    {id:4,nome:'Mateus Costa',idade:20,cidade:'São Paulo',esporte:'Basquete',pos:'Ala',vel:77,tec:74,res:79},
+  ];
+
+  // Inicializa resultados com sample
+  function buscar(){
+    const esporte = document.getElementById('f-esporte').value;
+    const cidade = document.getElementById('f-cidade').value.toLowerCase();
+    const idade = document.getElementById('f-idade').value;
+    const velMin = Number(document.getElementById('f-vel').value);
+
+    let minAge=null, maxAge=null;
+    if(idade){
+      const p = idade.split('-').map(x=>Number(x.trim()));
+      if(p.length===2){ minAge=p[0]; maxAge=p[1]; }
+    }
+
+    let results = sample.filter(s=>{
+      if(esporte && s.esporte!==esporte) return false;
+      if(cidade && !s.cidade.toLowerCase().includes(cidade)) return false;
+      if(minAge!==null && (s.idade<minAge || s.idade>maxAge)) return false;
+      if(s.vel < velMin) return false;
+      return true;
+    });
+
+    renderResultados(results);
+  }
+
+  function renderResultados(list){
+    const container = document.getElementById('resultados');
+    container.innerHTML='';
+    document.getElementById('total').textContent = list.length;
+    if(list.length===0){
+      const p = document.createElement('div'); p.className='panel'; p.textContent = 'Nenhum atleta encontrado com esses filtros.';
+      container.appendChild(p); return;
+    }
+    list.forEach(a=>{
+      const c = document.createElement('div'); c.className='card';
+      const thumb = document.createElement('div'); thumb.className='video-thumb'; thumb.textContent='▶';
+      thumb.onclick = ()=> openModalWith({title:a.nome+' — '+a.esporte, url:'' , athlete:a});
+      const info = document.createElement('div'); info.className='info';
+      info.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:start;"><div><strong>${a.nome}</strong><div style="font-size:13px;color:var(--muted)">${a.idade} anos • ${a.cidade}</div></div><div style="font-size:13px;color:var(--muted)">${a.esporte} • ${a.pos || ''}</div></div>`;
+      const attributes = document.createElement('div'); attributes.className='attr';
+      attributes.innerHTML = `<span class="pill">Vel ${a.vel}</span><span class="pill" style="background:#eef2ff;color:var(--accent)">${a.tec} Tec</span><span class="pill" style="background:#fff0f0;color:#d44">Res ${a.res}</span>`;
+      const actions = document.createElement('div'); actions.className='actions';
+      const btnContact = document.createElement('button'); btnContact.className='btn'; btnContact.textContent='Ver / Contactar'; btnContact.onclick = ()=> openModalWith({title:a.nome, url:'', athlete:a});
+      const btnShort = document.createElement('button'); btnShort.className='shortlist'; btnShort.textContent='Adicionar'; btnShort.onclick = ()=> addShortlist(a);
+      actions.appendChild(btnContact); actions.appendChild(btnShort);
+      info.appendChild(attributes); info.appendChild(actions);
+      c.appendChild(thumb); c.appendChild(info);
+      container.appendChild(c);
+    });
+  }
+
+  function resetFiltros(){
+    document.getElementById('f-esporte').value='';
+    document.getElementById('f-pos').value='';
+    document.getElementById('f-cidade').value='';
+    document.getElementById('f-idade').value='';
+    document.getElementById('f-vel').value=0;
+    document.getElementById('f-vel-val').textContent='0';
+    buscar();
+  }
+  document.getElementById('f-vel').addEventListener('input', e=> document.getElementById('f-vel-val').textContent = e.target.value);
+
+  // Shortlist
+  const shortlistArr = [];
+  function addShortlist(a){
+    if(shortlistArr.find(x=>x.id===a.id)) { alert('Já adicionado'); return; }
+    shortlistArr.push(a);
+    renderShortlist();
+  }
+  function renderShortlist(){
+    const el = document.getElementById('shortlist'); el.innerHTML='';
+    if(shortlistArr.length===0){ el.innerHTML='<div style="font-size:13px;color:var(--muted)">Nenhum atleta selecionado</div>'; return; }
+    shortlistArr.forEach(s=>{
+      const row=document.createElement('div'); row.style.display='flex'; row.style.justifyContent='space-between'; row.style.alignItems='center';
+      row.innerHTML = `<div><strong>${s.nome}</strong><div style="font-size:12px;color:var(--muted)">${s.esporte} • ${s.cidade}</div></div><div><button class="btn secondary" onclick="removerShort(${s.id})">Remover</button></div>`;
+      el.appendChild(row);
+    });
+  }
+  function removerShort(id){ const i = shortlistArr.findIndex(x=>x.id===id); if(i>=0) shortlistArr.splice(i,1); renderShortlist(); }
+
+  // Modal
+  const modal = document.getElementById('modal');
+  const mVideo = document.getElementById('m-video');
+  const mTitle = document.getElementById('m-title');
+  let modalContext = null;
+  function openModalWith(o){
+    modalContext = o;
+    mTitle.textContent = o.title || 'Vídeo';
+    if(o.url){
+      mVideo.src = o.url;
+      mVideo.style.display='block';
+    } else {
+      // caso sem vídeo real, mostramos um placeholder de instrução
+      mVideo.removeAttribute('src');
+      mVideo.style.display='none';
+      const box = document.querySelector('#modal .box');
+      if(!document.getElementById('placeholder-note')){
+        const note = document.createElement('div'); note.id='placeholder-note';
+        note.style.marginTop='12px'; note.style.color='var(--muted)'; note.textContent = 'Vídeo não disponível neste protótipo. Integre seu backend de armazenamento (S3/Cloud) e popule a url para reprodução aqui.';
+        box.appendChild(note);
+      }
+    }
+    modal.classList.add('show');
+  }
+  function closeModal(){ modal.classList.remove('show'); mVideo.pause(); mVideo.src=''; }
+
+  // Contact action (simulado)
+  document.getElementById('contact-btn').addEventListener('click', ()=>{
+    if(!modalContext || !modalContext.athlete){
+      alert('Abra a ficha do atleta para contatar (simulado).');
+      return;
+    }
+    const a = modalContext.athlete;
+    const msg = prompt('Escreva uma mensagem para ' + a.nome + ' (simulado):', 'Olá, sou olheiro do time X. Gostaria de conversar sobre uma avaliação.');
+    if(msg){
+      alert('Mensagem enviada (simulado) para ' + a.nome + '. No produto real, armazene o contato e notifique o atleta.');
+      closeModal();
+    }
+  });
+
+  function modalShortlist(){
+    if(modalContext && modalContext.athlete) addShortlist(modalContext.athlete);
+    else alert('Sem atleta definido.');
+  }
+
+  // Inicialização
+  renderResultados(sample);
+  renderPerfilVideos();
+  renderShortlist();
+</script>
+</body>
+</html>
