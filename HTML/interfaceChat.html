@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat | Talento Oculto</title>
+    <link rel="stylesheet" href="css/interfaceChat.css">
+</head>
+<body>
+
+    <div class="chat-container">
+        <div class="chat-header">
+            💬 Conversa com João Silva (Atleta)
+        </div>
+
+        <div class="chat-messages" id="chat">
+            <div class="message received">Olá! Vi seu perfil, gostei muito do seu desempenho.</div>
+            <div class="message sent">Obrigado! Tenho treinado bastante para melhorar cada vez mais.</div>
+            <div class="message received">Ótimo! Podemos conversar sobre oportunidades no clube?</div>
+        </div>
+
+        <div class="chat-input">
+            <input type="text" id="messageInput" placeholder="Digite sua mensagem...">
+            <button onclick="sendMessage()">➤</button>
+        </div>
+    </div>
+
+    <script>
+        // ======== SIMULAÇÃO DE ENVIO DE MENSAGEM ========
+        function sendMessage() {
+            const input = document.getElementById("messageInput");
+            const chat = document.getElementById("chat");
+
+            if (input.value.trim() !== "") {
+                const msg = document.createElement("div");
+                msg.classList.add("message", "sent");
+                msg.textContent = input.value;
+                chat.appendChild(msg);
+                input.value = "";
+                chat.scrollTop = chat.scrollHeight;
+            }
+        }
+    </script>
+
+</body>
+</html>

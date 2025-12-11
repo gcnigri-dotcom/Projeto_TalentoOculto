@@ -1,0 +1,144 @@
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #000; /* Texto preto */
+    padding: 20px;
+}
+
+/* HEADER */
+header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    color: #000; /* preto */
+}
+
+header p {
+    margin-top: 10px;
+    font-size: 1.1rem;
+    color: #000; /* preto */
+}
+
+/* CONTAINER PRINCIPAL */
+.contact-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+/* BOX DE INFORMAÇÕES */
+.contact-info {
+    flex: 1;
+    min-width: 280px;
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+    border: 2px solid #000; /* borda preta para reforçar identidade */
+}
+
+.contact-info h2,
+.contact-info h3 {
+    color: #000;
+    margin-bottom: 10px;
+ }
+
+.contact-info p {
+    margin-bottom: 10px;
+    font-size: 1rem;
+}
+
+.contact-info ul {
+    list-style: none;
+    margin-top: 10px;
+}
+
+.contact-info ul li {
+    margin-bottom: 8px;
+}
+
+.contact-info ul li a {
+    color: #000;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.contact-info ul li a:hover {
+    text-decoration: underline;
+}
+
+/* FORMULÁRIO */
+.contact-form {
+    flex: 2;
+    min-width: 300px;
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+    border: 2px solid #000; /* borda preta */
+}
+
+.contact-form h2 {
+    color: #000;
+    margin-bottom: 20px;
+}
+
+.contact-form label {
+    display: block;
+    font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    color: #000;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #000; /* borda preta */
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: #fefefe;
+    color: #000;
+    transition: 0.3s;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+    border-color: #333; /* preto mais suave no foco */
+    outline: none;
+}
+
+.contact-form button {
+    margin-top: 20px;
+    width: 100%;
+    padding: 15px;
+    background-color: #000; /* botão preto */
+    border: none;
+    color: white;
+    font-size: 1.1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.contact-form button:hover {
+    background-color: #333; /* cinza escuro */
+}
+
+/* RODAPÉ */
+footer {
+    text-align: center;
+    margin-top: 40px;
+    color: #000;
+}
