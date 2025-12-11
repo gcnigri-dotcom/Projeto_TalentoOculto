@@ -1,0 +1,220 @@
+/* ===========================
+       BASE DO SITE
+=========================== */
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* ===========================
+           HEADER
+=========================== */
+header {
+    width: 100%;
+    padding: 15px 20px;
+    background: var(--header-bg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-sizing: border-box;
+}
+
+header h1 {
+    flex: 1;
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* ===========================
+      BOTÃO VOLTAR
+=========================== */
+[data-theme="light"] .header-back-btn {
+    background: white;
+    color: black;
+    border: 2px solid black;
+}
+
+[data-theme="dark"] .header-back-btn {
+    background: rgba(0,0,0,0.4);
+    color: white;
+    border: 2px solid rgba(255,255,255,0.4);
+}
+
+.header-back-btn {
+    padding: 8px 16px;
+    font-weight: 600;
+    font-size: 16px;
+    text-decoration: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.3s;
+    white-space: nowrap;
+}
+
+.header-back-btn:hover {
+    transform: translateY(-1px);
+}
+
+/* ===========================
+           CONTAINER (AJUSTADO PARA ELIMINAR EXCESSO INFERIOR)
+=========================== */
+.container {
+    max-width: 900px;
+    /* Margem inferior bem pequena (10px) para tirar o "resto" */
+    margin: 30px auto 10px auto; 
+    padding: 20px;
+}
+
+/* ===========================
+           CARD (AJUSTADO PARA DESCER UM POUCO O CONTEÚDO)
+=========================== */
+.card-detalhe {
+    background: var(--card-bg);
+    color: var(--card-text);
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    /* Mantido o padding superior maior (35px) para empurrar o conteúdo para baixo */
+    padding: 35px 25px 25px 25px;
+}
+
+/* ===========================
+          VÍDEO
+=========================== */
+.video-wrapper video {
+    width: 100%;
+    max-height: 430px;
+    border-radius: 12px;
+    object-fit: cover;
+    background: black;
+}
+
+/* ===========================
+      INFO WRAPPER
+=========================== */
+.info-wrapper {
+    /* Reduzido para 40px, pois o botão está agora no fluxo normal */
+    padding-bottom: 40px; 
+}
+
+/* ===========================
+      TEXTOS E TÍTULOS
+=========================== */
+.info-wrapper h2 {
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.info-wrapper h3 {
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+.info-wrapper p {
+    margin: 6px 0;
+    font-size: 16px;
+}
+
+.descricao {
+    background: var(--input-bg);
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    /* Aumentado de 40px para 60px para separar mais o botão */
+    margin-bottom: 60px; 
+}
+
+/* ===========================
+     BOTÃO – EFEITO VIDRO
+=========================== */
+.chat-btn-detalhe {
+    /* Removida a margem superior pois agora usamos a margem inferior da descrição */
+    margin-top: 0; 
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    color: var(--text);
+    cursor: pointer;
+    transition: 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.chat-btn-detalhe:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255,255,255,0.35);
+}
+
+/* ===========================
+      BOTÃO FIXO NA PARTE INFERIOR (REMOVIDO OU IGNORADO PARA ESTA SOLUÇÃO)
+=========================== */
+/* Se você manteve o botão no fluxo normal, as classes abaixo não são mais necessárias no seu HTML: */
+.fixed-bottom-button-container,
+.fixed-bottom-button-container .chat-btn-detalhe {
+    /* Pode remover estas regras se o botão estiver novamente no fluxo normal do HTML */
+    display: none; 
+}
+
+
+/* ===========================
+      RESPONSIVIDADE
+=========================== */
+@media (max-width: 650px) {
+    .container {
+        padding: 15px;
+        margin: 15px auto 10px auto; 
+    }
+
+    .card-detalhe {
+        padding: 25px 15px 15px 15px;
+    }
+
+    .video-wrapper video {
+        max-height: 200px;
+    }
+
+    .info-wrapper h2 {
+        font-size: 22px;
+    }
+
+    .info-wrapper h3 {
+        font-size: 16px;
+    }
+    
+    .descricao {
+        /* Ajuste do espaçamento em mobile */
+        margin-bottom: 40px; 
+    }
+
+    .chat-btn-detalhe {
+        width: 100%;
+        padding: 14px 0;
+    }
+    
+    .info-wrapper {
+        padding-bottom: 30px; 
+    }
+}

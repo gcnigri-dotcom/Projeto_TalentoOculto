@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ video.nome }} - Detalhes</title>
+
+<link rel="stylesheet" href="{% static 'css/tema.css' %}">
+<link rel="stylesheet" href="{% static 'css/card.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+
+<header>
+    <a href="{% url 'paginaPrincipal' %}" class="header-back-btn">
+        <i class="fa-solid fa-arrow-left"></i> Voltar
+    </a>
+    <h1>{{ video.nome }}</h1>
+</header>
+
+<div class="container">
+    <div class="card-detalhe">
+
+        <!-- Vídeo -->
+        <div class="video-wrapper">
+            <video id="meuVideo" controls muted>
+                <source src="{{ video.arquivo.url }}" type="video/mp4">
+            </video>
+        </div>
+
+        <!-- Informações -->
+        <div class="info-wrapper">
+
+            <h2>{{ video.nome }}</h2>
+
+            <p><strong>Esporte:</strong> {{ video.esporte }}</p>
+            <p><strong>Região:</strong> {{ video.regiao }}</p>
+
+            <h3>Descrição</h3>
+            <p class="descricao">{{ video.descricao }}</p>
+
+            <!-- BOTÃO COM LINK PARA A CONVERSA -->
+            <a href="{% url 'conversa' video.id %}" class="chat-btn-detalhe btn-as-link">
+                <i class="fa-solid fa-comment"></i> Começar conversa
+            </a>
+
+        </div>
+
+    </div>
+</div>
+
+<script src="{% static 'js/tema.js' %}"></script>
+
+</body>
+</html>
